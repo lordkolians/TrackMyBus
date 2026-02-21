@@ -227,8 +227,8 @@
     }
 
     /* MAP */
-    #map { flex:1; background:var(--bg); }
-    .leaflet-container { background:var(--bg) !important; }
+    #map { flex:1; min-height:0; background:var(--bg); width:100%; }
+    .leaflet-container { background:var(--bg) !important; width:100% !important; height:100% !important; }
 
     /* Stats */
     .stats-bar {
@@ -428,8 +428,8 @@
   </div>
 
   <!-- MAP -->
-  <div style="position:relative;flex:1;overflow:hidden;">
-    <div id="map"></div>
+  <div style="position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <div id="map" style="flex:1;min-height:0;"></div>
 
     <div class="stats-bar">
       <div class="stat-chip">🚌 <span data-i18n="buses">Автобусы</span>: <strong id="statBuses">0</strong></div>
@@ -588,6 +588,14 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   document.getElementById('themeBtn').textContent = dark ? '🌙' : '☀️';
   if (tileLayer) { map.removeLayer(tileLayer); tileLayer = addTile(); }
+  // Redraw stop markers so non-terminal bg colour updates
+  ROUTES.forEach(route => {
+    sLayers[route.id].forEach((m, i) => {
+      const term = i===0||i===route.stops.length-1;
+      m.setIcon(stopIcon(route, term));
+    });
+  });
+  setTimeout(()=>map.invalidateSize(), 50);
 }
 
 /* ════════════════════════════════════════════════
@@ -690,9 +698,10 @@ function busIcon(route, pulsing) {
 
 function stopIcon(route, isTerminal) {
   const sz = isTerminal ? 14 : 10;
+  const bg = isTerminal ? route.color : (dark ? '#1e2432' : '#f4f6fc');
   return L.divIcon({
     className:'',
-    html:`<div style="width:${sz}px;height:${sz}px;background:${isTerminal?route.color:'var(--surface2)'};border:2.5px solid ${route.color};border-radius:50%;box-shadow:0 0 6px ${route.color}66;"></div>`,
+    html:`<div style="width:${sz}px;height:${sz}px;background:${bg};border:2.5px solid ${route.color};border-radius:50%;box-shadow:0 0 6px ${route.color}66;"></div>`,
     iconSize:[14,14],iconAnchor:[7,7],
   });
 }
@@ -1084,6 +1093,10 @@ renderSched('mobSchedList');
 updateStats();
 applyI18n();
 animateBuses();
+
+// Force Leaflet to recalculate map size after layout settles
+setTimeout(()=>map.invalidateSize(), 100);
+window.addEventListener('resize', ()=>map.invalidateSize());
 
 // refresh schedule every minute
 setInterval(()=>{ renderSched('schedList'); renderSched('mobSchedList'); }, 60000);
