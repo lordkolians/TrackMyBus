@@ -1124,15 +1124,20 @@ function navTo(section) {
   }
 }
 
-// Swipe — whole sheet is draggable, not just the handle
+// Swipe — whole sheet header/handle area is draggable, content scrolls freely
 (function(){
-  const sheet = document.getElementById('bottomSheet');
+  const sheet   = document.getElementById('bottomSheet');
+  const handle  = document.getElementById('sheetHandle');
+  const tabsRow = sheet.querySelector('.sheet-tabs');
   let sy = 0, st2 = 0, dragging = false;
 
+  function isDragTarget(el) {
+    // Allow drag only from handle row, tabs row, or the sheet itself (not content)
+    return handle.contains(el) || tabsRow.contains(el) || el === sheet;
+  }
+
   function onTouchStart(e) {
-    // Don't intercept if user is scrolling inside sheet content
-    const content = sheet.querySelector('.sheet-content');
-    if (content && content.contains(e.target) && content.scrollTop > 0) return;
+    if (!isDragTarget(e.target)) return;
     sy = e.touches[0].clientY;
     st2 = Date.now();
     dragging = true;
@@ -1142,7 +1147,6 @@ function navTo(section) {
   function onTouchMove(e) {
     if (!dragging) return;
     const dy = sy - e.touches[0].clientY;
-    // Only prevent scroll if user is swiping the sheet up/down meaningfully
     if (Math.abs(dy) > 8) e.preventDefault();
   }
 
@@ -1150,9 +1154,9 @@ function navTo(section) {
     if (!dragging) return;
     dragging = false;
     sheet.style.transition = '';
-    const dy = sy - e.changedTouches[0].clientY;
+    const dy  = sy - e.changedTouches[0].clientY;
     const vel = dy / (Date.now() - st2);
-    if (vel > 0.3 || dy > 50) setSheet(sheetSt === 'peek' ? 'half' : 'full');
+    if      (vel >  0.3 || dy >  50) setSheet(sheetSt === 'peek' ? 'half' : 'full');
     else if (vel < -0.3 || dy < -50) setSheet(sheetSt === 'full' ? 'half' : 'peek');
   }
 
