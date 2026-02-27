@@ -324,7 +324,7 @@
     }
     .sheet-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
 
-    .sheet-content { overflow-y:auto; flex:1; padding:10px 14px 80px; }
+    .sheet-content { overflow-y:auto; -webkit-overflow-scrolling:touch; flex:1; padding:10px 14px 80px; }
     .sheet-content::-webkit-scrollbar { display:none; }
 
     .mob-info {
@@ -1124,45 +1124,43 @@ function navTo(section) {
   }
 }
 
-// Swipe — whole sheet header/handle area is draggable, content scrolls freely
+// Swipe — handle + tabs trigger sheet movement; content scrolls freely (incl. iOS)
 (function(){
   const sheet   = document.getElementById('bottomSheet');
   const handle  = document.getElementById('sheetHandle');
   const tabsRow = sheet.querySelector('.sheet-tabs');
-  let sy = 0, st2 = 0, dragging = false;
+  const content = sheet.querySelector('.sheet-content');
+  let sy = 0, st2 = 0, dragging = false, startedInContent = false;
 
   function isDragTarget(el) {
-    // Allow drag only from handle row, tabs row, or the sheet itself (not content)
     return handle.contains(el) || tabsRow.contains(el) || el === sheet;
   }
 
-  function onTouchStart(e) {
+  sheet.addEventListener('touchstart', e => {
+    startedInContent = content && content.contains(e.target);
+    if (startedInContent) return; // let iOS handle native scroll
     if (!isDragTarget(e.target)) return;
     sy = e.touches[0].clientY;
     st2 = Date.now();
     dragging = true;
     sheet.style.transition = 'none';
-  }
+  }, {passive: true});
 
-  function onTouchMove(e) {
-    if (!dragging) return;
+  sheet.addEventListener('touchmove', e => {
+    if (!dragging || startedInContent) return;
     const dy = sy - e.touches[0].clientY;
     if (Math.abs(dy) > 8) e.preventDefault();
-  }
+  }, {passive: false});
 
-  function onTouchEnd(e) {
+  sheet.addEventListener('touchend', e => {
     if (!dragging) return;
     dragging = false;
     sheet.style.transition = '';
     const dy  = sy - e.changedTouches[0].clientY;
-    const vel = dy / (Date.now() - st2);
+    const vel = dy / Math.max(1, Date.now() - st2);
     if      (vel >  0.3 || dy >  50) setSheet(sheetSt === 'peek' ? 'half' : 'full');
     else if (vel < -0.3 || dy < -50) setSheet(sheetSt === 'full' ? 'half' : 'peek');
-  }
-
-  sheet.addEventListener('touchstart', onTouchStart, {passive: true});
-  sheet.addEventListener('touchmove',  onTouchMove,  {passive: false});
-  sheet.addEventListener('touchend',   onTouchEnd,   {passive: true});
+  }, {passive: true});
 })();
 
 function renderMobRoutes() {
