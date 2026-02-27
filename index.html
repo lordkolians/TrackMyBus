@@ -587,7 +587,8 @@ function toggleTheme() {
   dark = !dark;
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   document.getElementById('themeBtn').textContent = dark ? '🌙' : '☀️';
-  if (tileLayer) { map.removeLayer(tileLayer); tileLayer = addTile(); }
+  // Just update CSS filter — no need to swap tile layers
+  applyTileFilter();
   // Redraw stop markers so non-terminal bg colour updates
   ROUTES.forEach(route => {
     sLayers[route.id].forEach((m, i) => {
@@ -604,46 +605,50 @@ function toggleTheme() {
 const CENTER = [46.0614, 28.8419];
 
 const ROUTES = [
-  { id:1, color:'#f04060', nameKey:'r1_name', descKey:'r1_desc',
+  // Route 1 (Red) — North-South along ul. Lenina
+  { id:1, color:'#f04060', nameKey:'r1_name', descKey:'r1_desc', geo:null,
     sched:['06:00','06:40','07:20','08:00','08:40','09:20','10:10','11:00','12:00',
            '13:00','14:00','15:00','15:40','16:20','17:00','17:40','18:20','19:10','20:00'],
     stops:[
-      {k:'Автовокзал',     c:[46.0580,28.8350]},
-      {k:'Площадь Ленина', c:[46.0605,28.8390]},
-      {k:'Рынок',          c:[46.0625,28.8430]},
-      {k:'Школа №1',       c:[46.0640,28.8460]},
-      {k:'Больница',       c:[46.0665,28.8510]},
-      {k:'Конечная Север', c:[46.0690,28.8540]},
+      {k:'Автовокзал',     c:[46.0577,28.8340]},
+      {k:'Площадь Ленина', c:[46.0605,28.8365]},
+      {k:'Рынок',          c:[46.0630,28.8383]},
+      {k:'Школа №2',       c:[46.0652,28.8395]},
+      {k:'Больница',       c:[46.0672,28.8402]},
+      {k:'Конечная Север', c:[46.0697,28.8410]},
     ], visible:true },
-  { id:2, color:'#40c8f0', nameKey:'r2_name', descKey:'r2_desc',
+  // Route 2 (Blue) — East-West cross: Завод → Центр → ЖК Восток
+  { id:2, color:'#40c8f0', nameKey:'r2_name', descKey:'r2_desc', geo:null,
     sched:['06:15','07:00','07:45','08:30','09:15','10:15','11:15','12:15',
            '13:15','14:15','15:15','16:00','16:45','17:30','18:15','19:00','19:45'],
     stops:[
-      {k:'Завод',        c:[46.0540,28.8480]},
-      {k:'Ул. Ленина',   c:[46.0570,28.8450]},
-      {k:'Центр (банк)', c:[46.0610,28.8420]},
-      {k:'Парк',         c:[46.0635,28.8390]},
-      {k:'ЖК Восток',    c:[46.0660,28.8360]},
+      {k:'Завод',        c:[46.0588,28.8258]},
+      {k:'Ул. Победы',   c:[46.0602,28.8305]},
+      {k:'Центр (банк)', c:[46.0618,28.8368]},
+      {k:'Парк',         c:[46.0627,28.8425]},
+      {k:'ЖК Восток',    c:[46.0633,28.8482]},
     ], visible:true },
-  { id:3, color:'#60e090', nameKey:'r3_name', descKey:'r3_desc',
+  // Route 3 (Green) — Southern residential loop
+  { id:3, color:'#60e090', nameKey:'r3_name', descKey:'r3_desc', geo:null,
     sched:['06:30','07:15','08:00','08:45','09:30','10:30','11:30','12:30',
            '13:30','14:30','15:30','16:15','17:00','17:45','18:30','19:15','20:00'],
     stops:[
-      {k:'Южный микрорайон', c:[46.0545,28.8400]},
-      {k:'Ул. Победы',       c:[46.0565,28.8415]},
-      {k:'Рынок',            c:[46.0625,28.8430]},
-      {k:'Стадион',          c:[46.0645,28.8445]},
-      {k:'Дом культуры',     c:[46.0670,28.8460]},
+      {k:'Южный микрорайон', c:[46.0548,28.8362]},
+      {k:'Ул. Кирова',       c:[46.0570,28.8378]},
+      {k:'Рынок',            c:[46.0630,28.8383]},
+      {k:'Стадион',          c:[46.0648,28.8408]},
+      {k:'Дом культуры',     c:[46.0668,28.8428]},
     ], visible:true },
-  { id:4, color:'#f0a040', nameKey:'r4_name', descKey:'r4_desc',
+  // Route 4 (Orange) — Western loop: Автовокзал → Запад → Север-Запад
+  { id:4, color:'#f0a040', nameKey:'r4_name', descKey:'r4_desc', geo:null,
     sched:['06:45','07:30','08:15','09:00','09:45','10:45','11:45','12:45',
            '13:45','14:45','15:45','16:30','17:15','18:00','18:45','19:30'],
     stops:[
-      {k:'Автовокзал',        c:[46.0580,28.8350]},
-      {k:'Ул. Кирова',        c:[46.0598,28.8370]},
-      {k:'Поликлиника',       c:[46.0615,28.8395]},
-      {k:'Ул. Комсомольская', c:[46.0638,28.8410]},
-      {k:'Кладбище',          c:[46.0660,28.8430]},
+      {k:'Автовокзал',        c:[46.0577,28.8340]},
+      {k:'Ул. Комсомольская', c:[46.0590,28.8300]},
+      {k:'Поликлиника',       c:[46.0607,28.8272]},
+      {k:'Ул. Октябрьская',   c:[46.0632,28.8285]},
+      {k:'Кладбище',          c:[46.0658,28.8310]},
     ], visible:true },
 ];
 
@@ -664,17 +669,110 @@ L.control.zoom({position:'topright'}).addTo(map);
 
 let tileLayer;
 function addTile() {
-  return L.tileLayer(
-    dark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-         : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    {attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}
+  // Use OSM for both themes — apply CSS filter invert for dark mode
+  const layer = L.tileLayer(
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution:'© OpenStreetMap contributors', maxZoom:19}
   ).addTo(map);
+  applyTileFilter();
+  return layer;
+}
+
+function applyTileFilter() {
+  // Wait for tile pane to exist
+  requestAnimationFrame(() => {
+    const pane = map.getPanes().tilePane;
+    if (pane) {
+      pane.style.filter = dark
+        ? 'invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.8)'
+        : 'none';
+    }
+  });
 }
 tileLayer = addTile();
 
 const rLayers={}, sLayers={}, bMarkers={};
 
+/* ── OSRM road routing with IndexedDB cache ─────── */
+
+// Open/create IndexedDB for route geometry cache
+function openRouteDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('trackmybus_routes', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('geo', {keyPath:'id'});
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject();
+  });
+}
+
+async function getCachedGeo(routeId) {
+  try {
+    const db = await openRouteDB();
+    return new Promise(resolve => {
+      const tx = db.transaction('geo','readonly');
+      const req = tx.objectStore('geo').get(routeId);
+      req.onsuccess = e => resolve(e.target.result ? e.target.result.geo : null);
+      req.onerror = () => resolve(null);
+    });
+  } catch(e) { return null; }
+}
+
+async function setCachedGeo(routeId, geo) {
+  try {
+    const db = await openRouteDB();
+    const tx = db.transaction('geo','readwrite');
+    tx.objectStore('geo').put({id: routeId, geo});
+  } catch(e) {}
+}
+
+async function fetchOSRM(routeId, stops) {
+  // 1. Try cache first
+  const cached = await getCachedGeo(routeId);
+  if (cached) return cached;
+
+  // 2. Fetch from OSRM
+  try {
+    const coords = stops.map(s => `${s.c[1]},${s.c[0]}`).join(';');
+    const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code === 'Ok' && data.routes && data.routes[0]) {
+      const geo = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+      await setCachedGeo(routeId, geo); // save for next time
+      return geo;
+    }
+  } catch(e) {}
+  return null;
+}
+
+// Interpolate along an array of [lat,lng] points at fraction p (0..1)
+function posOnGeo(geo, p) {
+  if (!geo || geo.length < 2) return null;
+  let total = 0;
+  const dists = [0];
+  for (let i = 1; i < geo.length; i++) {
+    const dlat = geo[i][0] - geo[i-1][0];
+    const dlng = geo[i][1] - geo[i-1][1];
+    total += Math.sqrt(dlat*dlat + dlng*dlng);
+    dists.push(total);
+  }
+  if (total === 0) return geo[0];
+  const target = p * total;
+  for (let i = 1; i < geo.length; i++) {
+    if (dists[i] >= target) {
+      const frac = (target - dists[i-1]) / (dists[i] - dists[i-1]);
+      return [
+        geo[i-1][0] + (geo[i][0] - geo[i-1][0]) * frac,
+        geo[i-1][1] + (geo[i][1] - geo[i-1][1]) * frac,
+      ];
+    }
+  }
+  return geo[geo.length - 1];
+}
+
 function pos(route, p) {
+  // Use road geometry if loaded, else straight interpolation between stops
+  if (route.geo) return posOnGeo(route.geo, p);
   const stops=route.stops, n=stops.length-1;
   const sp=p*n, seg=Math.min(Math.floor(sp),n-1), frac=sp-seg;
   const a=stops[seg].c, b=stops[seg+1].c;
@@ -706,10 +804,26 @@ function stopIcon(route, isTerminal) {
   });
 }
 
+// Snap a [lat,lng] point to nearest point on a polyline array
+function snapToGeo(geo, coord) {
+  let best = null, bestDist = Infinity;
+  for (let i = 1; i < geo.length; i++) {
+    const a = geo[i-1], b = geo[i];
+    const dx = b[0]-a[0], dy = b[1]-a[1];
+    const lenSq = dx*dx + dy*dy;
+    let t = lenSq > 0 ? ((coord[0]-a[0])*dx + (coord[1]-a[1])*dy) / lenSq : 0;
+    t = Math.max(0, Math.min(1, t));
+    const px = a[0]+t*dx, py = a[1]+t*dy;
+    const d = (px-coord[0])**2 + (py-coord[1])**2;
+    if (d < bestDist) { bestDist = d; best = [px, py]; }
+  }
+  return best || coord;
+}
+
 function drawRoutes() {
   ROUTES.forEach(route => {
     const coords = route.stops.map(s=>s.c);
-    const poly = L.polyline(coords,{color:route.color,weight:4,opacity:0.75}).addTo(map);
+    const poly = L.polyline(coords,{color:route.color,weight:4,opacity:0.85}).addTo(map);
     poly.on('click',()=>showRouteInfo(route));
     rLayers[route.id] = poly;
     sLayers[route.id] = [];
@@ -720,6 +834,20 @@ function drawRoutes() {
       m.bindTooltip(`<b>${ts(stop.k)}</b><br><small style="color:${route.color}">${t(route.nameKey)}</small>`,
         {className:'tmb-tooltip',direction:'top',offset:[0,-6]});
       sLayers[route.id].push(m);
+    });
+
+    // Fetch road geometry, update polyline + snap stops onto it
+    fetchOSRM(route.id, route.stops).then(geo => {
+      if (geo && geo.length > 1) {
+        route.geo = geo;
+        rLayers[route.id].setLatLngs(geo);
+        // Snap each stop marker to the nearest point on the road geometry
+        route.stops.forEach((stop, i) => {
+          const snapped = snapToGeo(geo, stop.c);
+          stop.c = snapped; // update coordinate so pos() also uses it
+          sLayers[route.id][i].setLatLng(snapped);
+        });
+      }
     });
   });
 }
@@ -996,18 +1124,41 @@ function navTo(section) {
   }
 }
 
-// Swipe
+// Swipe — whole sheet is draggable, not just the handle
 (function(){
-  const handle=document.getElementById('sheetHandle');
-  const sheet=document.getElementById('bottomSheet');
-  let sy=0,st2=0;
-  handle.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;st2=Date.now();sheet.style.transition='none';},{passive:true});
-  handle.addEventListener('touchend',e=>{
-    sheet.style.transition='';
-    const dy=sy-e.changedTouches[0].clientY, vel=dy/(Date.now()-st2);
-    if(vel>0.3||dy>60) setSheet(sheetSt==='peek'?'half':'full');
-    else if(vel<-0.3||dy<-60) setSheet(sheetSt==='full'?'half':'peek');
-  },{passive:true});
+  const sheet = document.getElementById('bottomSheet');
+  let sy = 0, st2 = 0, dragging = false;
+
+  function onTouchStart(e) {
+    // Don't intercept if user is scrolling inside sheet content
+    const content = sheet.querySelector('.sheet-content');
+    if (content && content.contains(e.target) && content.scrollTop > 0) return;
+    sy = e.touches[0].clientY;
+    st2 = Date.now();
+    dragging = true;
+    sheet.style.transition = 'none';
+  }
+
+  function onTouchMove(e) {
+    if (!dragging) return;
+    const dy = sy - e.touches[0].clientY;
+    // Only prevent scroll if user is swiping the sheet up/down meaningfully
+    if (Math.abs(dy) > 8) e.preventDefault();
+  }
+
+  function onTouchEnd(e) {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = '';
+    const dy = sy - e.changedTouches[0].clientY;
+    const vel = dy / (Date.now() - st2);
+    if (vel > 0.3 || dy > 50) setSheet(sheetSt === 'peek' ? 'half' : 'full');
+    else if (vel < -0.3 || dy < -50) setSheet(sheetSt === 'full' ? 'half' : 'peek');
+  }
+
+  sheet.addEventListener('touchstart', onTouchStart, {passive: true});
+  sheet.addEventListener('touchmove',  onTouchMove,  {passive: false});
+  sheet.addEventListener('touchend',   onTouchEnd,   {passive: true});
 })();
 
 function renderMobRoutes() {
