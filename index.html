@@ -1,173 +1,28 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrackMyBus — Чадыр-Лунга</title>
-
-  <!-- PWA -->
-  <meta name="theme-color" content="#f0c040" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="TrackMyBus" />
-  <link rel="manifest" id="pwaManifest" />
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- App styles -->
-  <link rel="stylesheet" href="trackmybus.css" />
-</head>
-<body>
-
-<!-- Offline Banner — in document flow, below header -->
-<div id="offline-banner" style="display:none">
-  📡 Offline — показываем кэшированные данные
-</div>
-
-<header>
-  <div class="logo">
-    <div class="logo-icon">🚌</div>
-    <div class="logo-text">TrackMy<span>Bus</span></div>
-  </div>
-  <div class="header-right">
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      <span data-i18n="sim">СИМ</span>
-    </div>
-    <select class="lang-select" id="langSel" onchange="setLang(this.value)">
-      <option value="ru">RU</option>
-      <option value="ro">RO</option>
-      <option value="en">EN</option>
-    </select>
-    <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()" title="Тема">🌙</button>
-  </div>
-</header>
-
-<div class="main">
-
-  <!-- ── SIDEBAR (desktop) ── -->
-  <div class="sidebar">
-    <div class="sidebar-tabs">
-      <button class="sidebar-tab active" id="dsk-tab-routes" onclick="dskTab('routes')" data-i18n="routes">Маршруты</button>
-      <button class="sidebar-tab"        id="dsk-tab-buses"  onclick="dskTab('buses')"  data-i18n="buses">Автобусы</button>
-      <button class="sidebar-tab"        id="dsk-tab-sched"  onclick="dskTab('sched')"  data-i18n="schedule">Расписание</button>
-      <button class="sidebar-tab"        id="dsk-tab-alerts" onclick="dskTab('alerts')" data-i18n="alerts">Тревоги</button>
-    </div>
-
-    <div class="sidebar-panel active" id="dsk-panel-routes">
-      <div class="sidebar-section">
-        <div class="section-label" data-i18n="routes">Маршруты</div>
-        <div class="routes-list" id="routesList"></div>
-      </div>
-    </div>
-
-    <div class="sidebar-panel" id="dsk-panel-buses">
-      <div class="section-label" style="padding:13px 16px 0" data-i18n="buses_online">Автобусы онлайн</div>
-      <div class="buses-scroll" id="busesList"></div>
-    </div>
-
-    <div class="sidebar-panel" id="dsk-panel-sched">
-      <div class="section-label" style="padding:13px 16px 0" data-i18n="schedule">Расписание</div>
-      <div class="schedule-scroll" id="schedList"></div>
-    </div>
-
-    <div class="sidebar-panel" id="dsk-panel-alerts">
-      <div class="section-label" style="padding:13px 16px 0" data-i18n="alerts">Тревоги системы</div>
-      <div class="alerts-scroll" id="alertsList"></div>
-    </div>
-  </div>
-
-  <!-- ── MAP ── -->
-  <div style="position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column;">
-    <div id="map" style="flex:1;min-height:0;"></div>
-
-    <div class="stats-bar">
-      <div class="stat-chip">🚌 <span data-i18n="buses">Автобусы</span>: <strong id="statBuses">0</strong></div>
-      <div class="stat-chip">📍 <span data-i18n="stops">Остановки</span>: <strong id="statStops">0</strong></div>
-      <div class="stat-chip">🛣️ <span data-i18n="routes">Маршруты</span>: <strong id="statRoutes">0</strong></div>
-      <div class="stat-chip" id="alertChip" style="display:none;border-color:#f04060;">
-        ⚠️ <strong id="statAlerts" style="color:#f04060">0</strong>
-      </div>
-    </div>
-
-    <div class="info-panel" id="infoPanel">
-      <button class="close-btn" onclick="closePanel()">✕</button>
-      <div class="info-panel-title" id="panelTitle">—</div>
-      <div class="info-panel-sub"   id="panelSub">—</div>
-      <div id="panelContent"></div>
-    </div>
-  </div>
-
-</div><!-- /.main -->
-
-<!-- ── MOBILE STATS ── -->
-<div class="mob-stats">
-  <div class="mob-stat">🚌 <strong id="mStatBuses">0</strong></div>
-  <div class="mob-stat">📍 <strong id="mStatStops">0</strong></div>
-  <div class="mob-stat">🛣️ <strong id="mStatRoutes">0</strong></div>
-</div>
-
-<!-- ── MOBILE INFO CARD ── -->
-<div class="mob-info" id="mobInfo">
-  <button class="close-btn" onclick="closeMobInfo()">✕</button>
-  <div class="info-panel-title" id="mobTitle">—</div>
-  <div class="info-panel-sub"   id="mobSub">—</div>
-  <div id="mobContent"></div>
-</div>
-
-<!-- ── MOBILE BOTTOM SHEET ── -->
-<div class="bottom-sheet peek" id="bottomSheet">
-  <div class="sheet-handle-row" id="sheetHandle">
-    <div class="sheet-handle"></div>
-  </div>
-  <div class="sheet-tabs">
-    <button class="sheet-tab active" id="tabRoutes" onclick="switchTab('routes')" data-i18n="routes">Маршруты</button>
-    <button class="sheet-tab"        id="tabBuses"  onclick="switchTab('buses')"  data-i18n="buses">Автобусы</button>
-    <button class="sheet-tab"        id="tabSched"  onclick="switchTab('sched')"  data-i18n="schedule">Расписание</button>
-    <button class="sheet-tab"        id="tabAlerts" onclick="switchTab('alerts')" data-i18n="alerts">⚠️</button>
-  </div>
-  <div class="sheet-content">
-    <div id="mobRoutesList"></div>
-    <div id="mobBusesList"  style="display:none"></div>
-    <div id="mobSchedList"  style="display:none"></div>
-    <div id="mobAlertsList" style="display:none"></div>
-  </div>
-</div>
-
-<!-- ── MOBILE BOTTOM NAV ── -->
-<nav class="bottom-nav">
-  <button class="nav-btn active" id="navMap" onclick="navTo('map')">
-    <div class="nav-btn-icon">🗺️</div>
-    <div class="nav-btn-label" data-i18n="map">КАРТА</div>
-  </button>
-  <button class="nav-btn" id="navRoutes" onclick="navTo('routes')">
-    <div class="nav-btn-icon">🛣️</div>
-    <div class="nav-btn-label" data-i18n="routes">МАРШРУТЫ</div>
-  </button>
-  <button class="nav-btn" id="navBuses" onclick="navTo('buses')">
-    <div class="nav-btn-icon">🚌</div>
-    <div class="nav-btn-label" data-i18n="buses">АВТОБУСЫ</div>
-  </button>
-  <button class="nav-btn" id="navSched" onclick="navTo('sched')">
-    <div class="nav-btn-icon">🕐</div>
-    <div class="nav-btn-label" data-i18n="schedule">РАСПИСАНИЕ</div>
-  </button>
-  <button class="nav-btn" id="navAlerts" onclick="navTo('alerts')">
-    <div class="nav-btn-icon">⚠️</div>
-    <div class="nav-btn-label" data-i18n="alerts">ТРЕВОГИ</div>
-    <div class="nav-alert-dot" id="navAlertDot"></div>
-  </button>
-</nav>
-
-<!-- App JavaScript -->
-<script src="trackmybus.js"></script>
-
-</body>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrackMyBus — Чадыр-Лунга</title>
+    <meta name="theme-color" content="#f0c040" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TrackMyBus" />
+    <link rel="manifest" id="pwaManifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
