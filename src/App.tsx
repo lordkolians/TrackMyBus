@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type * as L from 'leaflet';
 import { useMap } from 'react-leaflet';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { MapView } from './components/MapView';
@@ -83,6 +84,7 @@ export function App() {
       <MobileInfo />
       <BottomSheet onRouteClick={handleRouteClick} onBusClick={handleBusClick} />
       <BottomNav onNavMap={handleNavMap} onNavTab={handleNavTab} />
+      <SpeedInsights />
     </div>
   );
 }
