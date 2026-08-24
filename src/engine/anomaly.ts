@@ -8,10 +8,43 @@ const STALL_SEC = 120;
 const PROGRESS_THRESHOLD = 0.000005;
 
 /** Display labels and marker colours for each alert type, in all three UI languages. */
-export const ALERT_DEFS: Record<AlertType, { ru: string; ro: string; en: string; color: string }> = {
-  LONG_STOP:    { ru: 'Длительная остановка', ro: 'Oprire neobișnuită',   en: 'Unusual stop',   color: '#f0c040' },
-  SLOW_TRAFFIC: { ru: 'Пробка',               ro: 'Trafic intens',        en: 'Heavy traffic',  color: '#f09040' },
-  STALLED:      { ru: 'Возможная задержка',   ro: 'Posibilă întârziere',  en: 'Possible delay', color: '#f04060' },
+export const ALERT_DEFS: Record<
+  AlertType,
+  {
+    ru: string;
+    ro: string;
+    en: string;
+    tr: string;
+    bg: string;
+    color: string;
+  }
+> = {
+  LONG_STOP: {
+    ru: 'Длительная остановка',
+    ro: 'Oprire neobișnuită',
+    en: 'Unusual stop',
+    tr: 'Olağandışı duraklama',
+    bg: 'Необичайно спиране',
+    color: '#f0c040',
+  },
+
+  SLOW_TRAFFIC: {
+    ru: 'Пробка',
+    ro: 'Trafic intens',
+    en: 'Heavy traffic',
+    tr: 'Yoğun trafik',
+    bg: 'Натоварен трафик',
+    color: '#f09040',
+  },
+
+  STALLED: {
+    ru: 'Возможная задержка',
+    ro: 'Posibilă întârziere',
+    en: 'Possible delay',
+    tr: 'Olası gecikme',
+    bg: 'Възможно закъснение',
+    color: '#f04060',
+  },
 };
 
 /**

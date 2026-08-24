@@ -25,6 +25,7 @@ export function Header() {
           <option value="ro">RO</option>
           <option value="en">EN</option>
           <option value="tr">TR</option>
+          <option value="bg">BG</option>
         </select>
         <button className="hdr-btn" onClick={toggleDark} title="Тема">
           {dark ? '🌙' : '☀️'}

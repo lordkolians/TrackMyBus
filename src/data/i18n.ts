@@ -6,7 +6,6 @@ interface Translations {
   routes: string;
   buses: string;
   buses_online: string;
-
   schedule: string;
   stops: string;
   map: string;
@@ -60,7 +59,6 @@ export const TR: Record<Lang, Translations> = {
     routes: 'Маршруты',
     buses: 'Автобусы',
     buses_online: 'Автобусы онлайн',
-
     schedule: 'Расписание',
     stops: 'Остановки',
     map: 'КАРТА',
@@ -140,7 +138,6 @@ export const TR: Record<Lang, Translations> = {
     routes: 'Rute',
     buses: 'Autobuze',
     buses_online: 'Autobuze online',
-
     schedule: 'Orar',
     stops: 'Statii',
     map: 'HARTA',
@@ -220,7 +217,6 @@ export const TR: Record<Lang, Translations> = {
     routes: 'Routes',
     buses: 'Buses',
     buses_online: 'Buses Online',
-
     schedule: 'Schedule',
     stops: 'Stops',
     map: 'MAP',
@@ -300,7 +296,6 @@ export const TR: Record<Lang, Translations> = {
     routes: 'Rotalar',
     buses: 'Otobüsler',
     buses_online: 'Çevrimiçi Otobüsler',
-
     schedule: 'Sefer Saatleri',
     stops: 'Duraklar',
     map: 'HARİTA',
@@ -373,6 +368,85 @@ export const TR: Record<Lang, Translations> = {
       'Конечная СЗ': 'Kuzeybatı Terminali',
       'Ул. Чкалова': 'Çkalov Caddesi',
       'Ул. Буджакская': 'Bucak Caddesi',
+    },
+  },
+
+  bg: {
+    routes: 'Маршрути',
+    buses: 'Автобуси',
+    buses_online: 'Автобуси онлайн',
+    schedule: 'Разписание',
+    stops: 'Спирки',
+    map: 'КАРТА',
+    sim: 'СИМ',
+
+    alerts: 'Предупреждения',
+    no_alerts: '✅ Всички автобуси работят нормално',
+
+    status: 'Статус',
+    route_lbl: 'Маршрут',
+    next_stop: 'Следваща спирка',
+
+    moving: '▶ В движение',
+    stopped_s: '■ Спрял',
+
+    stop_lbl: 'Спирка',
+    next_bus: 'Следващ автобус',
+
+    total_stops: 'Спирки',
+    total_buses: 'Автобуси',
+    in_motion: 'В движение',
+    at_stop: 'Спрели',
+
+    bus_lbl: 'Автобус',
+    next: 'следващ',
+
+    eta_title: 'ПРИСТИГАНЕ',
+    eta_ontime: '🟢 По разписание',
+    eta_delayed: '🔴 Закъснение',
+
+    eta_conf_hi: 'Точност: висока',
+    eta_conf_lo: 'Точност: ниска',
+
+    r1_name: 'Маршрут 1',
+    r1_desc: 'Юг → Център → Болница → Север',
+
+    r2_name: 'Маршрут 2',
+    r2_desc: 'Запад → Център → Изток',
+
+    r3_name: 'Маршрут 3',
+    r3_desc: 'Югозапад → Център → Североизток',
+
+    r4_name: 'Маршрут 4',
+    r4_desc: 'Автогара → Запад → Северозапад',
+
+    sm: {
+      'Конечная Юг': 'Южен терминал',
+      'Южный микрорайон': 'Южен квартал',
+      'Ул. Кирова': 'ул. Кирова',
+      'Ул. Победы': 'ул. Победа',
+      'Площадь Ленина': 'пл. Ленин',
+      'Центр (банк)': 'Център (банка)',
+      'Рынок': 'Пазар',
+      'Школа №2': 'Училище №2',
+      'Больница': 'Болница',
+      'Стадион': 'Стадион',
+      'Конечная Север': 'Северен терминал',
+      'Конечная Запад': 'Западен терминал',
+      'Ул. Горького': 'ул. Горки',
+      'Завод Прогресс': 'Завод Прогрес',
+      'Парк Победы': 'Парк Победа',
+      'Ул. Комсомольская': 'ул. Комсомолска',
+      'ЖК Восток': 'Източен жилищен комплекс',
+      'Конечная Восток': 'Източен терминал',
+      'Автовокзал': 'Автогара',
+      'Ул. Октябрьская': 'ул. Октомври',
+      'Поликлиника 1': 'Поликлиника №1',
+      'Дом культуры': 'Дом на културата',
+      'Ул. Ленина': 'ул. Ленин',
+      'Конечная СЗ': 'Северозападен терминал',
+      'Ул. Чкалова': 'ул. Чкалов',
+      'Ул. Буджакская': 'ул. Буджакска',
     },
   },
 };
