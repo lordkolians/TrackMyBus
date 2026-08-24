@@ -26,7 +26,7 @@ export interface Bus {
   st: BusStatus;
 }
 
-export type Lang = 'ru' | 'ro' | 'en';
+export type Lang = 'ru' | 'ro' | 'en' | 'tr';
 
 export type AlertType = 'LONG_STOP' | 'SLOW_TRAFFIC' | 'STALLED';
 
