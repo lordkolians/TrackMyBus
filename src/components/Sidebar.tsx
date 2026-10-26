@@ -43,6 +43,18 @@ export function Sidebar({ onRouteClick, onBusClick }: Props) {
           <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
             {routes.length} {t(lang, 'routes').toLowerCase()} · {totalStops} {t(lang, 'stops').toLowerCase()}
           </div>
+          <div
+            style={{
+              fontSize: 10,
+              color: 'var(--text-dim)',
+              marginTop: 12,
+              opacity: 0.75,
+            }}
+          >
+            © 2026 Gheorghi Stoianov
+            <br />
+            All rights reserved.
+          </div>
         </div>
       </div>
 
