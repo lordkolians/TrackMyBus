@@ -99,9 +99,9 @@ AI assistants (Claude by Anthropic and ChatGPT) were used to help structure code
 
 ## Awards and achievements
 
-- **Silver Medal** — INFOMATRIX World Finals 2026
-- **1st Place** — FirSTep 2026
-- **1st Place** — Scientific-Practical Conference(НПК) 2026
+- 🥈**Silver Medal** — INFOMATRIX World Finals 2026
+- 🥇**1st Place** — FirSTep 2026
+- 🥇**1st Place** — Scientific-Practical Conference(НПК) 2026
 
 ---
 
