@@ -2,7 +2,7 @@
 
 Real-time urban bus tracking web application for Ceadir-Lunga, Republic of Moldova.
 
-Built for INFOMATRIX 2026 by Stoianov Gheorghi & Bejenari Daniil, Grade X — Theoretical Lyceum Orizont.
+Created and developed by **Gheorghi Stoianov**.
 
 ---
 
@@ -93,7 +93,15 @@ The anomaly detector runs on each bus every 2 seconds and raises alerts when a b
 
 ## Responsible AI use
 
-AI assistants (Claude by Anthropic, ChatGPT) were used to help structure code snippets and brainstorm UI layout ideas. Every suggestion was reviewed, tested, and verified by the team. All route data, stop coordinates, and research (47 resident interviews) were collected independently in Ceadir-Lunga.
+AI assistants (Claude by Anthropic and ChatGPT) were used to help structure code snippets and brainstorm UI layout ideas. Suggestions were reviewed, tested, and verified by the author. Route data, stop coordinates, and research (47 resident interviews) were collected independently in Ceadir-Lunga.
+
+---
+
+## Awards and achievements
+
+- **Silver Medal** — INFOMATRIX World Finals 2026
+- **1st Place** — FirSTep 2026
+- **1st Place** — Scientific-Practical Conference(НПК) 2026
 
 ---
 
@@ -104,3 +112,13 @@ AI assistants (Claude by Anthropic, ChatGPT) were used to help structure code sn
 | ✅ Now | SIM mode — web app live, 4 routes, PWA, 3 languages |
 | Phase 2 | GPS integration — real trackers on buses, live data API |
 | Phase 3 | Mobile app (iOS & Android), push notifications, ML-based ETA |
+
+---
+
+## Copyright
+
+Copyright © 2026 **Gheorghi Stoianov**. All rights reserved.
+
+TrackMyBus, including its original source code, application structure, design, and documentation, is protected by applicable copyright laws. No permission is granted to copy, modify, distribute, or commercially exploit this project without prior written permission from the copyright holder, except where permitted by applicable law.
+
+Third-party libraries, services, and other components remain subject to their respective licenses and terms.
